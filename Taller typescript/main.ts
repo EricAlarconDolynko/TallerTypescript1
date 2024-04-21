@@ -1,7 +1,27 @@
 import { series } from './data.js';
 import { Serie } from './series.js';
 
-function generarTablaHTML(series: Serie[]): string {
+let seriesTable : HTMLElement = document.getElementById('seriesTabla')!;
+//let promedioElemento : HTMLElement = document.getElementById('promedio')!;
+
+function tablaDinamica(series: Serie[]):void{
+    
+    for (let serie of series){
+        let rowElement = `
+        <div class = "row">
+            <div class = "col">${serie.id}</div>
+            <div class = "col">${serie.title}</div>
+            <div class = "col">${serie.network}</div>
+            <div class = "col">${serie.seasons}</div>
+            <div class = "col">${serie.description}</div>
+            <div class = "col">${serie.website}</div>
+            <div class = "col"><img src = "${serie.imageUrl}" alt = "${serie.title}"></div>
+        </div>
+        `
+    }
+}
+
+function mostrarDatosSeries(series: Serie[]): void {
     let tablaHTML = `
         <table>
             <thead>
@@ -36,19 +56,11 @@ function generarTablaHTML(series: Serie[]): string {
             </tbody>
         </table>
     `;
-    
-    return tablaHTML;
+
+    seriesTable.innerHTML = tablaHTML;    
 }
 
-const tablaHTML = generarTablaHTML(series);
-const tablaSeriesDiv = document.getElementById('tablaSeries');
-if (tablaSeriesDiv) {
-    tablaSeriesDiv.innerHTML = tablaHTML;
-} else {
-    console.error('No se encontró el elemento con id "tablaSeries"');
-}
-
-function calcularPromedioTemporadas(): number {
+function calcularPromedioTemporadas(): void {
     const celdasTemporadas = document.querySelectorAll('#tablaSeries tbody tr td:nth-child(4)');
     
     let totalTemporadas = 0;
@@ -63,15 +75,6 @@ function calcularPromedioTemporadas(): number {
     });
 
     const promedio = cantidadSeries > 0 ? totalTemporadas / cantidadSeries : 0;
-    
-    return promedio;
+    //promedioElemento.textContent = `Season average: ${promedio}`;
 }
 
-const promedioTemporadas = calcularPromedioTemporadas();
-
-const promedioElement = document.getElementById('promedio');
-if (promedioElement) {
-    promedioElement.textContent = `Season average: ${promedioTemporadas}`;
-} else {
-    console.error('No se encontró el elemento con id "promedio"');
-}
